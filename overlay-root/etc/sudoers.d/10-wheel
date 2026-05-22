@@ -1,0 +1,2 @@
+# Default sudoers tweak: wheel members may sudo with their password.
+%wheel ALL=(ALL) ALL

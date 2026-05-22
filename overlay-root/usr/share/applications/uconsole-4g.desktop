@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=uConsole 4G Power
+Comment=Enable / disable the SIM7600G modem
+Exec=foot -T "uConsole 4G" sh -c 'sudo uconsole-4g enable; read -p "[enter]"'
+Icon=network-cellular-signal-excellent-symbolic
+Terminal=false
+Type=Application
+Categories=Network;System;

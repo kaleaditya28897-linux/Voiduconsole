@@ -1,0 +1,2 @@
+# Allow members of wheel to power-cycle the 4G modem without a password prompt.
+%wheel ALL=(ALL) NOPASSWD: /usr/local/bin/uconsole-4g

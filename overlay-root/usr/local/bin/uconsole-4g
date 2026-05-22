@@ -1,0 +1,47 @@
+#!/bin/bash
+# uconsole-4g: power-cycle the SIM7600G 4G expansion on uConsole CM4.
+# Pure-libgpiod replacement for clockworkpi's wiringPi version.
+#
+# Pin map (BCM numbering on the CM4):
+#   GPIO 24 = 4G module power-enable
+#   GPIO 15 = 4G module reset/PWRKEY
+set -euo pipefail
+CHIP=gpiochip0
+PWR_EN=24
+PWRKEY=15
+
+usage() { echo "usage: $0 {enable|disable|status}"; exit 1; }
+
+ensure_gpioset() { command -v gpioset >/dev/null || { echo "install libgpiod"; exit 2; }; }
+
+enable_4g() {
+  echo ":: powering on 4G module..."
+  gpioset --mode=exit "$CHIP" "$PWR_EN"=1
+  gpioset --mode=time --sec=5 "$CHIP" "$PWRKEY"=1
+  gpioset --mode=exit "$CHIP" "$PWRKEY"=0
+  echo ":: waiting 13s for modem to enumerate..."
+  sleep 13
+  echo ":: done. Try:  mmcli -L"
+}
+
+disable_4g() {
+  echo ":: powering off 4G module..."
+  gpioset --mode=time --sec=3 "$CHIP" "$PWR_EN"=1
+  gpioset --mode=exit "$CHIP" "$PWR_EN"=0
+  sleep 20
+  echo ":: done."
+}
+
+status_4g() {
+  if command -v mmcli >/dev/null; then mmcli -L; fi
+  ip -br addr | grep -E 'usb0|ppp0|wwan' || echo "(no 4G network interface up)"
+}
+
+[ "${1:-}" ] || usage
+ensure_gpioset
+case "$1" in
+  enable)  enable_4g ;;
+  disable) disable_4g ;;
+  status)  status_4g ;;
+  *) usage ;;
+esac

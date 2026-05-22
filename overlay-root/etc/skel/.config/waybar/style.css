@@ -1,0 +1,4 @@
+* { font-family: "Noto Sans Mono", monospace; font-size: 12px; }
+window#waybar { background: #101418; color: #d6deeb; }
+#workspaces button.focused { background: #2a3a5a; }
+#battery.critical { color: #ff5555; }

@@ -1,0 +1,5 @@
+#!/bin/sh
+# labwc-greeter: launch ReGreet inside a one-shot labwc instance so greetd
+# (which only knows how to exec one program) can show a graphical login.
+# Rotate the DSI panel before the greeter draws.
+exec labwc -s "wlr-randr --output DSI-1 --transform 270; regreet; labwc --exit"

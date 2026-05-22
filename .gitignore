@@ -1,0 +1,7 @@
+downloads/
+work/
+deploy/
+*.img
+*.tar.xz
+*.deb
+*.log

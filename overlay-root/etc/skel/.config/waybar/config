@@ -1,0 +1,15 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 26,
+  "modules-left":   ["sway/workspaces", "custom/4g"],
+  "modules-center": ["clock"],
+  "modules-right":  ["network", "pulseaudio", "battery", "backlight", "tray"],
+  "clock":      { "format": "{:%a %d %b  %H:%M}" },
+  "battery":    { "format": "{capacity}% {icon}", "format-icons": ["", "", "", "", ""] },
+  "network":    { "format-wifi": " {essid} {signalStrength}%", "format-ethernet": " {ifname}", "format-disconnected": "睊" },
+  "pulseaudio": { "format": "{volume}% {icon}", "format-muted": "婢", "format-icons": ["", "", ""], "on-click": "pavucontrol" },
+  "backlight":  { "format": "{percent}% " },
+  "tray":       { "spacing": 8 },
+  "custom/4g":  { "exec": "mmcli -L 2>/dev/null | grep -q Modem && echo  4G || echo ", "interval": 10, "on-click": "foot -T '4G' sh -c 'sudo uconsole-4g enable; read'" }
+}

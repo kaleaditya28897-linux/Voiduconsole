@@ -1,0 +1,10 @@
+# labwc per-output config (also read by labwc on startup).
+# Rotates the uConsole DSI panel to landscape orientation.
+<?xml version="1.0"?>
+<labwc_config>
+  <output>
+    <name>DSI-1</name>
+    <transform>270</transform>
+    <scale>1.0</scale>
+  </output>
+</labwc_config>

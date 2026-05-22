@@ -1,0 +1,24 @@
+# labwc rc.xml -- minimal config tuned for the 1280x720 uConsole display.
+<?xml version="1.0"?>
+<labwc_config>
+  <theme>
+    <name>Adwaita-dark</name>
+    <cornerRadius>4</cornerRadius>
+  </theme>
+  <keyboard>
+    <default />
+    <keybind key="W-Return">    <action name="Execute" command="foot" /></keybind>
+    <keybind key="W-d">         <action name="Execute" command="wofi --show drun" /></keybind>
+    <keybind key="W-q">         <action name="Close" /></keybind>
+    <keybind key="W-f">         <action name="ToggleFullscreen" /></keybind>
+    <keybind key="W-l">         <action name="Execute" command="swaylock -c 000000" /></keybind>
+    <keybind key="XF86MonBrightnessUp">   <action name="Execute" command="uconsole-brightness up" /></keybind>
+    <keybind key="XF86MonBrightnessDown"> <action name="Execute" command="uconsole-brightness down" /></keybind>
+    <keybind key="XF86AudioRaiseVolume">  <action name="Execute" command="pamixer -i 5" /></keybind>
+    <keybind key="XF86AudioLowerVolume">  <action name="Execute" command="pamixer -d 5" /></keybind>
+    <keybind key="XF86AudioMute">         <action name="Execute" command="pamixer -t" /></keybind>
+  </keyboard>
+  <mouse>
+    <default />
+  </mouse>
+</labwc_config>

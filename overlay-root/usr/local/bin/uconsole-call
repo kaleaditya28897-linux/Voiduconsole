@@ -1,0 +1,44 @@
+#!/bin/bash
+# uconsole-call: minimal TUI for making / answering phone calls and SMS
+# on the SIM7600G via AT commands. Wraps the procedure documented at
+# https://github.com/clockworkpi/uConsole/wiki/How-to-make-phone-call---send-sms-with-4G-extension
+set -euo pipefail
+AT_PORT="${AT_PORT:-/dev/ttyUSB3}"
+[ -c "$AT_PORT" ] || AT_PORT=/dev/ttyUSB2
+[ -c "$AT_PORT" ] || { echo "No AT port found. Run: sudo uconsole-4g enable"; exit 1; }
+
+at() { printf '%s\r\n' "$1" | socat - "$AT_PORT",crnl,b115200,raw,echo=0,ignoreeof; }
+
+case "${1:-menu}" in
+  call)    [ "${2:-}" ] || { echo "usage: $0 call <number>"; exit 1; }; at "ATD${2};" ;;
+  hangup)  at "AT+CHUP"; at "ATH" ;;
+  answer)  at "ATA" ;;
+  sim)     at "AT+CPIN?" ;;
+  signal)  at "AT+CSQ" ;;
+  network) at "AT+COPS?"; at "AT+CGREG?" ;;
+  sms)
+    [ "${3:-}" ] || { echo "usage: $0 sms <number> <message>"; exit 1; }
+    at "ATZ"; sleep 1
+    at "AT+CMGF=1"; sleep 1
+    printf 'AT+CMGS="%s"\r' "$2" | socat - "$AT_PORT",crnl,b115200,raw,echo=0,ignoreeof
+    sleep 1
+    printf '%s\x1A' "$3" | socat - "$AT_PORT",crnl,b115200,raw,echo=0,ignoreeof
+    ;;
+  menu|*)
+    cat <<EOF
+uconsole-call -- SIM7600G voice & SMS helper
+AT port: $AT_PORT  (override with AT_PORT=...)
+
+  $0 call    <number>          place a voice call
+  $0 answer                    accept incoming call
+  $0 hangup                    end current call
+  $0 sms     <number> <text>   send SMS
+  $0 sim                       SIM status
+  $0 signal                    RSSI / BER
+  $0 network                   carrier + registration status
+
+The 4G module must be powered first:
+  sudo uconsole-4g enable
+EOF
+    ;;
+esac
