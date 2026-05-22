@@ -1,0 +1,27 @@
+#!/bin/sh
+# uconsole-cheatsheet -- show the labwc keybind reference via fuzzel.
+# Bound to Super+? in rc.xml. Selecting a row does nothing; this is read-only.
+set -eu
+
+printf '%s\n' \
+  "Super+Return       footclient (terminal)" \
+  "Super+D            fuzzel launcher" \
+  "Super+V            clipboard history" \
+  "Super+Esc          power menu" \
+  "Super+?            this cheatsheet" \
+  "Super+Q            close window" \
+  "Super+F            fullscreen toggle" \
+  "Super+M            maximize toggle" \
+  "Super+L            lock screen" \
+  "Super+Space        toggle decorations" \
+  "Super+H / L        snap left / right half" \
+  "Super+K / J        snap top / bottom half" \
+  "Alt+Tab            cycle windows" \
+  "Super+1..4         switch workspace" \
+  "Super+Shift+1..4   move window to workspace" \
+  "Super+Ctrl+L/R     prev / next workspace" \
+  "Super+Arrows       move window 40px" \
+  "Super+Shift+Arrows resize window 40px" \
+  "PrtSc              screenshot full" \
+  "Shift+PrtSc        screenshot region" \
+  | fuzzel --dmenu --prompt='keys: ' --lines=20 --width=60 >/dev/null || true

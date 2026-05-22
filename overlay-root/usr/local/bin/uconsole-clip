@@ -1,0 +1,9 @@
+#!/bin/sh
+# uconsole-clip -- clipboard history picker (cliphist -> fuzzel -> wl-copy).
+# Bound to Super+V in rc.xml.
+set -eu
+
+cliphist list \
+  | fuzzel --dmenu --prompt='clip: ' --lines=10 --width=60 \
+  | cliphist decode \
+  | wl-copy

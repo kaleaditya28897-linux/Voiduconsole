@@ -1,4 +1,28 @@
-* { font-family: "Noto Sans Mono", monospace; font-size: 12px; }
-window#waybar { background: #101418; color: #d6deeb; }
-#workspaces button.focused { background: #2a3a5a; }
+* {
+  font-family: "Noto Sans Mono", monospace;
+  font-size: 11px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+window#waybar {
+  background: #101418;
+  color: #d6deeb;
+  border-bottom: 1px solid #1c2230;
+}
+#workspaces button { padding: 0 6px; background: transparent; color: #6e7a90; }
+#workspaces button.focused { background: #2a3a5a; color: #d6deeb; }
+#taskbar button { padding: 0 4px; }
+#clock,
+#battery,
+#network,
+#pulseaudio,
+#backlight,
+#tray,
+#idle_inhibitor,
+#custom-4g { padding: 0 6px; }
+#battery.warning  { color: #f1fa8c; }
 #battery.critical { color: #ff5555; }
+#idle_inhibitor.activated { color: #f1fa8c; }
+tooltip { background: #101418; border: 1px solid #2a3a5a; }
+tooltip label { color: #d6deeb; padding: 2px 4px; }

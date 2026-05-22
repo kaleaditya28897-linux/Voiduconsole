@@ -27,10 +27,10 @@ CLOCKWORK_KERNEL_DEB_URL="https://github.com/clockworkpi/apt/raw/main/debian/poo
 PACKAGES_BASE="base-system void-repo-nonfree dbus elogind polkit-elogind chrony wpa_supplicant openssh sudo curl wget git nano vim tmux bash-completion man-pages"
 PACKAGES_FIRMWARE="linux-firmware-broadcom linux-firmware-network bluez"
 PACKAGES_GFX="mesa-dri mesa-vulkan-broadcom xkeyboard-config xkbcomp"
-PACKAGES_WAYLAND="labwc foot Waybar wofi swaybg swayidle swaylock grim slurp wl-clipboard wlr-randr brightnessctl xdg-desktop-portal xdg-desktop-portal-wlr xdg-user-dirs mako greetd ReGreet seatd"
+PACKAGES_WAYLAND="labwc foot Waybar fuzzel swaybg swayidle swaylock grim slurp wl-clipboard wlr-randr brightnessctl wob cliphist wlsunset xdg-desktop-portal xdg-desktop-portal-wlr xdg-user-dirs mako greetd ReGreet seatd"
 PACKAGES_AUDIO="pipewire wireplumber alsa-pipewire alsa-utils pavucontrol pamixer"
 PACKAGES_NET="NetworkManager network-manager-applet ModemManager libmbim libqmi mobile-broadband-provider-info usb-modeswitch socat ppp"
-PACKAGES_APPS="firefox-esr Thunar gnome-disk-utility gnome-system-monitor galculator mpv imv gnome-text-editor"
-PACKAGES_UTIL="libgpiod i2c-tools usbutils pciutils lsof htop fastfetch rsync"
+PACKAGES_APPS="firefox-esr Thunar gnome-disk-utility galculator mpv imv gnome-text-editor"
+PACKAGES_UTIL="libgpiod i2c-tools usbutils pciutils lsof htop btop fastfetch rsync"
 
 ALL_PACKAGES="$PACKAGES_BASE $PACKAGES_FIRMWARE $PACKAGES_GFX $PACKAGES_WAYLAND $PACKAGES_AUDIO $PACKAGES_NET $PACKAGES_APPS $PACKAGES_UTIL"

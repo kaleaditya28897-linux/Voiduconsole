@@ -42,15 +42,16 @@ A single `.img` file (~6 GiB sparse, ~3.8 GiB actual data) containing:
 |------------------|----------|
 | Base             | Void Linux aarch64 **glibc**, runit, xbps, elogind, seatd, polkit, dbus |
 | Kernel           | ClockworkPi 5.10.17-v8+ deb with `devterm-panel-uc`, `devterm-pmu`, `devterm-misc` overlays |
-| Compositor       | **labwc** (Wayland) + Waybar + wofi + foot + mako |
+| Compositor       | **labwc** (Wayland) + Waybar + **fuzzel** + foot + mako + wob OSD |
 | Login            | **greetd + ReGreet** on the rotated DSI-1 panel |
 | Audio            | PipeWire + WirePlumber + alsa-pipewire + `pavucontrol` |
 | Network          | NetworkManager + `nm-applet` (Wi-Fi *and* GSM in a single tray icon) |
 | Modem            | ModemManager + libmbim + libqmi + `mobile-broadband-provider-info` + `usb-modeswitch` + `socat` + `ppp` |
 | File manager     | Thunar |
 | Browser          | Firefox-ESR (Wayland-enabled) |
-| Misc GUIs        | gnome-disk-utility, gnome-system-monitor, galculator, mpv, imv, gnome-text-editor |
-| Custom tools     | `uconsole-4g`, `uconsole-call`, `uconsole-brightness`, `labwc-greeter` |
+| Misc GUIs        | gnome-disk-utility, galculator, mpv, imv, gnome-text-editor (system monitor: `btop` in foot) |
+| Clipboard        | `cliphist` history watcher + `uconsole-clip` (Super+V) picker |
+| Custom tools     | `uconsole-4g`, `uconsole-call`, `uconsole-brightness`, `uconsole-menu`, `uconsole-cheatsheet`, `uconsole-clip`, `uconsole-osd-vol`, `uconsole-osd-bri`, `labwc-greeter` |
 
 The custom tools live under `/usr/local/bin/` and have desktop entries so they
 also show up in wofi.
@@ -215,15 +216,31 @@ sudo resize2fs /dev/mmcblk0p2
 
 ### Keyboard / WM shortcuts (labwc default `rc.xml`)
 
-| Shortcut       | Action                                  |
-|----------------|-----------------------------------------|
-| Super + Enter  | Open `foot` terminal                    |
-| Super + D      | Launcher (`wofi --show drun`)           |
-| Super + Q      | Close focused window                    |
-| Super + Shift + E | Logout (kill labwc)                  |
-| PrtSc          | `grim` screenshot to `~/Pictures/`      |
-| Vol Up / Down  | `pamixer` ±5%                           |
-| Brightness +/− | `uconsole-brightness +/-`               |
+A full reference is always reachable in-session via **Super + ?** (runs
+`uconsole-cheatsheet`).
+
+| Shortcut             | Action                                          |
+|----------------------|-------------------------------------------------|
+| Super + Enter        | `footclient` (instant terminal from foot-server)|
+| Super + D            | Launcher (`fuzzel`)                             |
+| Super + V            | Clipboard history picker (`cliphist` → fuzzel)  |
+| Super + Esc          | Power menu (lock / logout / reboot / poweroff)  |
+| Super + ?            | Keybind cheatsheet                              |
+| Super + Q            | Close focused window                            |
+| Super + F / M        | Toggle fullscreen / maximize                    |
+| Super + Space        | Toggle window decorations                       |
+| Super + H / L        | Snap window to left / right half                |
+| Super + K / J        | Snap window to top / bottom half                |
+| Alt + Tab / Sh+Tab   | Cycle windows                                   |
+| Super + 1..4         | Switch to workspace N                           |
+| Super + Shift + 1..4 | Move window to workspace N                      |
+| Super + Ctrl + ←/→   | Previous / next workspace                       |
+| Super + Arrows       | Move window 40 px                               |
+| Super + Shift+Arrows | Resize window 40 px                             |
+| PrtSc                | Full screenshot to `~/Pictures/`                |
+| Shift + PrtSc        | Region screenshot via `slurp`                   |
+| Vol Up / Down / Mute | `uconsole-osd-vol` (also feeds wob OSD)         |
+| Brightness +/−       | `uconsole-osd-bri` (also feeds wob OSD)         |
 
 ---
 

@@ -1,24 +1,184 @@
-# labwc rc.xml -- minimal config tuned for the 1280x720 uConsole display.
 <?xml version="1.0"?>
+<!--
+  labwc rc.xml -- uConsole CM4 4G handheld (1280x480 effective after DSI-1
+  rotation). Keybind-first design: every workflow has a Super-prefixed shortcut
+  so the trackball stays optional.
+
+  Keymap (also surfaced by Super+? -> uconsole-cheatsheet):
+
+    Super+Return        footclient (instant terminal from the foot server)
+    Super+D             fuzzel app launcher
+    Super+V             clipboard history picker
+    Super+Esc           power menu (lock/logout/reboot/poweroff)
+    Super+?             keybind cheatsheet
+    Super+Q             close window
+    Super+F             toggle fullscreen
+    Super+L             swaylock
+
+    Super+H/L           snap window to left/right half
+    Super+K/J           snap window to top/bottom half
+    Super+M             maximize toggle
+    Super+Space         toggle floating-style (toggles decorations)
+
+    Alt+Tab / Alt+Shift+Tab    cycle windows forward/backward
+    Super+Tab                  next window on workspace
+
+    Super+1..4          switch to workspace N
+    Super+Shift+1..4    move focused window to workspace N
+    Super+Ctrl+Left/Right       prev/next workspace
+
+    Super+Arrows                move window by 40px
+    Super+Shift+Arrows          resize window by 40px
+
+    XF86 Brightness/Volume      uconsole-osd-bri / uconsole-osd-vol
+                                (also feeds wob OSD)
+-->
 <labwc_config>
+
   <theme>
     <name>Adwaita-dark</name>
-    <cornerRadius>4</cornerRadius>
+    <cornerRadius>2</cornerRadius>
+    <titlebar>
+      <layout>icon:close</layout>
+    </titlebar>
+    <font place="ActiveWindow">
+      <name>Noto Sans</name>
+      <size>9</size>
+    </font>
+    <font place="InactiveWindow">
+      <name>Noto Sans</name>
+      <size>9</size>
+    </font>
+    <font place="MenuItem">
+      <name>Noto Sans</name>
+      <size>10</size>
+    </font>
   </theme>
+
+  <desktops>
+    <number>4</number>
+    <names>
+      <name>1</name>
+      <name>2</name>
+      <name>3</name>
+      <name>4</name>
+    </names>
+  </desktops>
+
+  <resistance>
+    <screenEdgeStrength>20</screenEdgeStrength>
+  </resistance>
+
+  <focus>
+    <followMouse>no</followMouse>
+    <raiseOnFocus>yes</raiseOnFocus>
+  </focus>
+
+  <placement>
+    <policy>cascade</policy>
+  </placement>
+
+  <snapping>
+    <range>1</range>
+    <topMaximize>yes</topMaximize>
+  </snapping>
+
   <keyboard>
     <default />
-    <keybind key="W-Return">    <action name="Execute" command="foot" /></keybind>
-    <keybind key="W-d">         <action name="Execute" command="wofi --show drun" /></keybind>
+
+    <!-- Launchers / core apps -->
+    <keybind key="W-Return">    <action name="Execute" command="sh -c 'footclient || foot'" /></keybind>
+    <keybind key="W-d">         <action name="Execute" command="fuzzel" /></keybind>
+    <keybind key="W-v">         <action name="Execute" command="uconsole-clip" /></keybind>
+    <keybind key="W-Escape">    <action name="Execute" command="uconsole-menu" /></keybind>
+    <keybind key="W-slash">     <action name="Execute" command="uconsole-cheatsheet" /></keybind>
+    <!-- Note: Super+L is reserved for SnapToEdge right (vim-style HJKL).
+         Use Super+Esc -> "Lock" or wait for swayidle to lock automatically. -->
+
+    <!-- Window control -->
     <keybind key="W-q">         <action name="Close" /></keybind>
     <keybind key="W-f">         <action name="ToggleFullscreen" /></keybind>
-    <keybind key="W-l">         <action name="Execute" command="swaylock -c 000000" /></keybind>
-    <keybind key="XF86MonBrightnessUp">   <action name="Execute" command="uconsole-brightness up" /></keybind>
-    <keybind key="XF86MonBrightnessDown"> <action name="Execute" command="uconsole-brightness down" /></keybind>
-    <keybind key="XF86AudioRaiseVolume">  <action name="Execute" command="pamixer -i 5" /></keybind>
-    <keybind key="XF86AudioLowerVolume">  <action name="Execute" command="pamixer -d 5" /></keybind>
-    <keybind key="XF86AudioMute">         <action name="Execute" command="pamixer -t" /></keybind>
+    <keybind key="W-m">         <action name="ToggleMaximize" /></keybind>
+    <keybind key="W-space">     <action name="ToggleDecorations" /></keybind>
+
+    <!-- Half-screen tiling -->
+    <keybind key="W-h">         <action name="SnapToEdge" direction="left" /></keybind>
+    <keybind key="W-l">         <action name="SnapToEdge" direction="right" /></keybind>
+    <keybind key="W-k">         <action name="SnapToEdge" direction="up" /></keybind>
+    <keybind key="W-j">         <action name="SnapToEdge" direction="down" /></keybind>
+
+    <!-- Window cycling -->
+    <keybind key="A-Tab">       <action name="NextWindow" /></keybind>
+    <keybind key="A-S-Tab">     <action name="PreviousWindow" /></keybind>
+    <keybind key="W-Tab">       <action name="NextWindow" /></keybind>
+
+    <!-- Workspaces -->
+    <keybind key="W-1"><action name="GoToDesktop" to="1" /></keybind>
+    <keybind key="W-2"><action name="GoToDesktop" to="2" /></keybind>
+    <keybind key="W-3"><action name="GoToDesktop" to="3" /></keybind>
+    <keybind key="W-4"><action name="GoToDesktop" to="4" /></keybind>
+    <keybind key="W-S-1"><action name="SendToDesktop" to="1" /></keybind>
+    <keybind key="W-S-2"><action name="SendToDesktop" to="2" /></keybind>
+    <keybind key="W-S-3"><action name="SendToDesktop" to="3" /></keybind>
+    <keybind key="W-S-4"><action name="SendToDesktop" to="4" /></keybind>
+    <keybind key="W-C-Left">  <action name="GoToDesktop" to="left"  /></keybind>
+    <keybind key="W-C-Right"> <action name="GoToDesktop" to="right" /></keybind>
+
+    <!-- Move / resize windows by 40px -->
+    <keybind key="W-Left">    <action name="MoveRelative"   x="-40" y="0" /></keybind>
+    <keybind key="W-Right">   <action name="MoveRelative"   x="40"  y="0" /></keybind>
+    <keybind key="W-Up">      <action name="MoveRelative"   x="0"   y="-40" /></keybind>
+    <keybind key="W-Down">    <action name="MoveRelative"   x="0"   y="40" /></keybind>
+    <keybind key="W-S-Left">  <action name="ResizeRelative" left="40"   /></keybind>
+    <keybind key="W-S-Right"> <action name="ResizeRelative" right="40"  /></keybind>
+    <keybind key="W-S-Up">    <action name="ResizeRelative" top="40"    /></keybind>
+    <keybind key="W-S-Down">  <action name="ResizeRelative" bottom="40" /></keybind>
+
+    <!-- Hardware keys: drive both the hardware AND the wob OSD -->
+    <keybind key="XF86MonBrightnessUp">   <action name="Execute" command="uconsole-osd-bri up" /></keybind>
+    <keybind key="XF86MonBrightnessDown"> <action name="Execute" command="uconsole-osd-bri down" /></keybind>
+    <keybind key="XF86AudioRaiseVolume">  <action name="Execute" command="uconsole-osd-vol up" /></keybind>
+    <keybind key="XF86AudioLowerVolume">  <action name="Execute" command="uconsole-osd-vol down" /></keybind>
+    <keybind key="XF86AudioMute">         <action name="Execute" command="uconsole-osd-vol mute" /></keybind>
+
+    <!-- Screenshot -->
+    <keybind key="Print">                 <action name="Execute" command="sh -c 'grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png'" /></keybind>
+    <keybind key="S-Print">               <action name="Execute" command="sh -c 'grim -g \"$(slurp)\" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png'" /></keybind>
   </keyboard>
+
   <mouse>
     <default />
   </mouse>
+
+  <!--
+    Window rules tuned for the narrow landscape panel.
+    Firefox is forced maximized so the URL bar doesn't get clipped, dialogs
+    stay centered and floating, foot drops its titlebar (we already know what
+    it is), and small utility apps stay floating instead of being tiled.
+  -->
+  <windowRules>
+    <windowRule identifier="firefox*">
+      <skipTaskbar>no</skipTaskbar>
+      <serverDecoration>no</serverDecoration>
+      <action name="Maximize" />
+    </windowRule>
+    <windowRule identifier="foot">
+      <serverDecoration>no</serverDecoration>
+    </windowRule>
+    <windowRule identifier="footclient">
+      <serverDecoration>no</serverDecoration>
+    </windowRule>
+    <windowRule identifier="pavucontrol">
+      <serverDecoration>yes</serverDecoration>
+      <skipTaskbar>yes</skipTaskbar>
+    </windowRule>
+    <windowRule identifier="galculator">
+      <serverDecoration>yes</serverDecoration>
+      <skipTaskbar>yes</skipTaskbar>
+    </windowRule>
+    <windowRule identifier="org.gnome.*">
+      <serverDecoration>yes</serverDecoration>
+    </windowRule>
+  </windowRules>
+
 </labwc_config>

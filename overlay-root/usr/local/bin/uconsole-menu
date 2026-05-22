@@ -1,0 +1,20 @@
+#!/bin/sh
+# uconsole-menu -- power menu via fuzzel dmenu.
+# Bound to Super+Esc in labwc rc.xml.
+set -eu
+
+choice=$(printf '%s\n' \
+    "🔒  Lock" \
+    "🚪  Logout" \
+    "🔁  Reboot" \
+    "⏻  Shutdown" \
+    "❌  Cancel" \
+  | fuzzel --dmenu --prompt='power: ' --lines=5 --width=20)
+
+case "$choice" in
+  *Lock*)     exec swaylock -c 000000 ;;
+  *Logout*)   exec labwc --exit ;;
+  *Reboot*)   exec systemctl reboot 2>/dev/null || exec sudo -n loginctl reboot 2>/dev/null || exec sudo -n shutdown -r now ;;
+  *Shutdown*) exec systemctl poweroff 2>/dev/null || exec sudo -n loginctl poweroff 2>/dev/null || exec sudo -n shutdown -h now ;;
+  *)          exit 0 ;;
+esac

@@ -1,9 +1,42 @@
 #!/bin/sh
-# labwc autostart -- launched once per session
-# uConsole DSI-1 physically rotated; transform 90 = keyboard at bottom
+# labwc autostart -- launched once per session.
+# Keep this lean: every line here costs RAM on a CM4 with 4 GiB.
+
+# uConsole DSI-1 panel: physically portrait, rotate 270 for landscape.
+# (Kernel TTY uses fbcon=rotate:1 -- opposite convention. Do not "fix" this.)
 wlr-randr --output DSI-1 --transform 270 2>/dev/null
 
+# Background
 swaybg -c '#101418' &
+
+# Foot terminal server -- subsequent `footclient` invocations spawn instantly
+# off this single process. Keybinds in rc.xml prefer footclient.
+foot --server &
+
+# Status bar + notifications
 waybar &
 mako &
+
+# wob OSD: create a per-user FIFO (tmpfs-backed) and feed it from uconsole-osd-*.
+WOB_SOCK="${XDG_RUNTIME_DIR:-/tmp}/wob.sock"
+rm -f "$WOB_SOCK"
+mkfifo "$WOB_SOCK"
+tail -f "$WOB_SOCK" | wob \
+    --anchor bottom --margin 40 \
+    --width 240 --height 28 --border-size 1 \
+    --background-color '#101418cc' \
+    --border-color '#2a3a5aff' \
+    --bar-color '#d6deebff' &
+
+# Clipboard history watcher (kilobyte-scale Go binary)
+wl-paste --watch cliphist store &
+
+# Idle handling (dim -> lock -> DPMS off)
+swayidle -w -C "$HOME/.config/swayidle/config" &
+
+# NetworkManager tray (covers both Wi-Fi and GSM)
 nm-applet --indicator &
+
+# Night light. Off by default -- uncomment and fill in coords to enable.
+# wlsunset -l 12.97 -L 77.59 &
+

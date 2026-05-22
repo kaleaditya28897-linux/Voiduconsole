@@ -1,0 +1,40 @@
+# mako notifications -- tuned for the 1280x480 uConsole landscape panel.
+# Tiny default size, top-right anchored to avoid clobbering the waybar
+# tray icons.
+
+sort=-time
+layer=overlay
+anchor=top-right
+output=DSI-1
+font=Noto Sans 10
+
+background-color=#101418
+text-color=#d6deeb
+border-color=#2a3a5a
+border-size=1
+border-radius=2
+
+width=320
+height=120
+margin=4
+padding=6
+default-timeout=4000
+ignore-timeout=0
+max-icon-size=24
+
+[urgency=low]
+border-color=#1c2230
+default-timeout=2000
+
+[urgency=critical]
+border-color=#ff5555
+text-color=#ff5555
+default-timeout=0
+
+# OSD-style brief notifications used by uconsole-osd-* helpers
+# (currently routed through wob, but kept here so notify-send -c device works
+# the same way for apps that don't speak the wob FIFO).
+[category=device]
+default-timeout=1200
+border-color=#2a3a5a
+group-by=category
