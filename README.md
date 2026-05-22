@@ -1,9 +1,14 @@
 # Voiduconsole
 
 A complete, reproducible builder that produces a **ready-to-flash glibc Void
-Linux image** for the **ClockworkPi uConsole CM4 (4G)** with a fully working
-Wayland desktop, 4G modem stack, and replacement GUI tools for the bits the
-Linux ecosystem doesn't package for Void.
+Linux image** for the **ClockworkPi uConsole** (Raspberry Pi **CM4** *and*
+**CM5** carriers, 4G variant) with a fully working Wayland desktop, 4G modem
+stack, and replacement GUI tools for the bits the Linux ecosystem doesn't
+package for Void.
+
+A single image boots on either compute module: the Pi firmware picks the right
+kernel (`kernel8.img` for CM4 / 4 KiB pages, `kernel_2712.img` for CM5 /
+16 KiB pages) and the right `[pi4]`/`[pi5]` section of `config.txt` at boot.
 
 The build runs on any x86_64 Linux host (developed on Void Linux) and uses
 `qemu-user-static` to chroot into the aarch64 rootfs while installing packages.
@@ -41,7 +46,7 @@ A single `.img` file (~6 GiB sparse, ~3.8 GiB actual data) containing:
 | Layer            | Software |
 |------------------|----------|
 | Base             | Void Linux aarch64 **glibc**, runit, xbps, elogind, seatd, polkit, dbus |
-| Kernel           | ClockworkPi 5.10.17-v8+ deb with `devterm-panel-uc`, `devterm-pmu`, `devterm-misc` overlays |
+| Kernel           | ak-rex universal `clockworkpi-kernel` 6.12.87 deb (CM4 `kernel8.img` + CM5 `kernel_2712.img`, `clockworkpi-uconsole` *and* `clockworkpi-uconsole-cm5` overlays) |
 | Compositor       | **labwc** (Wayland) + Waybar + **fuzzel** + foot + mako + wob OSD |
 | Login            | **greetd + ReGreet** on the rotated DSI-1 panel |
 | Audio            | PipeWire + WirePlumber + alsa-pipewire + `pavucontrol` |
@@ -65,10 +70,13 @@ with GNOME / KDE. Several of the apps the user normally relies on for the
 uConsole (`gnome-calls` for voice calls over the SIM7600G; `modem-manager-gui`
 as a graphical MM frontend) **are not packaged on Void Linux**. This builder:
 
-* uses Clockwork's **binary kernel** (5.10) because the panel, keyboard MCU,
-  fan controller, power-management IC (AXP209), and audio amp drivers are not
-  in mainline,
-* drops in a Wayland desktop that runs well on the CM4 (labwc + GTK4 apps),
+* uses **ak-rex's community kernel** (6.12 LTS, packaged as
+  `clockworkpi-kernel`) because the panel, keyboard MCU, fan controller,
+  power-management IC (AXP209), and audio amp drivers are not in mainline.
+  The same deb ships both the CM4 (4 KiB-page) and CM5 (16 KiB-page) kernel
+  images, all RPi DTBs (`bcm2711-rpi-cm4.dtb` *and* `bcm2712-rpi-cm5-*.dtb`)
+  and both the `clockworkpi-uconsole` and `clockworkpi-uconsole-cm5` overlays,
+* drops in a Wayland desktop that runs well on the CM4/CM5 (labwc + GTK4 apps),
 * ships **`uconsole-4g`** (a `libgpiod` reimplementation of Clockwork's
   wiringPi power script) and **`uconsole-call`** (an AT-over-`socat` TUI) so
   you can power the modem, place calls, send SMS, and inspect the modem
@@ -78,13 +86,15 @@ as a graphical MM frontend) **are not packaged on Void Linux**. This builder:
 
 ## Hardware requirements
 
-* ClockworkPi **uConsole CM4 4G** (with SIMCom **SIM7600G** modem)
+* ClockworkPi **uConsole 4G** with either a **Raspberry Pi CM4** or **CM5**
+  compute module (with SIMCom **SIM7600G** modem)
 * microSD card, ≥ 8 GiB (16 GiB+ recommended)
 * SIM card with a known APN (or post-paid auto-config)
 * A Linux x86_64 host with ≥ 8 GiB free disk (for downloads + rootfs + image)
 
-The build has only been validated on the CM4 4G variant. The Pi 5 variant and
-the A04/A06 variants will need different kernel debs in `config.sh`.
+The build has been validated on the **CM4 4G** variant; the **CM5** path uses
+the same image and the ak-rex universal kernel deb. The A04/A06 (RK3399) and
+CM3 variants would need different kernel debs in `config.sh`.
 
 ---
 
@@ -148,7 +158,7 @@ Typical run time: **20–40 minutes**, dominated by package downloads and
 firefox-esr unpacking under qemu-user. Output lands in `deploy/`:
 
 ```
-deploy/voiduconsole-cm4-YYYYMMDD.img
+deploy/voiduconsole-both-YYYYMMDD.img    # default: boots on CM4 *and* CM5
 ```
 
 ### Re-running
@@ -179,7 +189,7 @@ Say your card is `/dev/sdX`:
 
 ```bash
 sudo umount /dev/sdX* 2>/dev/null
-sudo dd if=deploy/voiduconsole-cm4-*.img of=/dev/sdX bs=4M status=progress conv=fsync
+sudo dd if=deploy/voiduconsole-*.img of=/dev/sdX bs=4M status=progress conv=fsync
 sync
 ```
 
@@ -379,7 +389,8 @@ Voiduconsole/
 ## What the build does, stage by stage
 
 1. **00 download** — `void-platformfs.tar.xz` (Void aarch64 base) and
-   `uconsole-kernel-cm4-rpi.deb` (ClockworkPi 5.10 kernel) into `downloads/`.
+   `clockworkpi-kernel.deb` (ak-rex 6.12.y universal CM4+CM5 kernel) into
+   `downloads/`.
 2. **10 prepare-rootfs** — extract platformfs into `work/rootfs/`, drop in
    `/usr/bin/qemu-aarch64-static` and `/etc/resolv.conf` so the chroot can
    resolve DNS.
@@ -387,9 +398,11 @@ Voiduconsole/
    add the `nonfree` repo (firmware), then install every package listed in
    `config.sh`. Already-installed packages are filtered out beforehand
    because `xbps-install -y` aborts hard on a no-op.
-4. **30 install-kernel** — `ar x` the deb, copy `kernel8.img`, `*.dtb`,
-   `overlays/*.dtbo` into `rootfs/boot`, copy modules under
-   `rootfs/usr/lib/modules/5.10.17-v8+`, then `depmod -a` inside the chroot.
+4. **30 install-kernel** — `ar x` the deb, copy **both** `kernel8.img` (CM4)
+   and `kernel_2712.img` (CM5), all `*.dtb`, and the full `overlays/*.dtbo`
+   tree into `rootfs/boot`, copy **both** module trees (`6.12.87-v8+` and
+   `6.12.87-v8-16k+`) under `rootfs/lib/modules/`, then `depmod -a` each
+   kernel version inside the chroot.
 5. **40 apply-overlay** — `cp -af overlay-boot/* rootfs/boot/` and
    `overlay-root/* rootfs/`.
 6. **50 configure-system** — hostname, locale, timezone, create user with the
@@ -506,8 +519,13 @@ pavucontrol              # GUI mixer
   Use `gpsd` + `gpsmon` or `mmcli -m 0 --location-get`.
 * **Bluetooth** packages are installed (`bluez`) but no GUI manager is shipped
   by default — install `blueman` if you want a tray applet.
-* The Clockwork 5.10 kernel is **not** mainline. Future mainlining of the
-  uConsole CM4 (panel driver upstream) would let us drop this dependency.
+* The ak-rex 6.12.y kernel is **not** mainline (it carries the
+  `clockworkpi-uconsole` / `clockworkpi-uconsole-cm5` DT overlays on top of
+  rpi-6.12.y). Future mainlining of the uConsole panel driver would let us
+  drop this dependency.
+* **CM5** has only been tested via the image-level path (universal config.txt
+  + ak-rex kernel). Voice call PCM routing on CM5's RP1 audio block may need
+  additional `pw-link` glue beyond what already ships.
 
 ---
 

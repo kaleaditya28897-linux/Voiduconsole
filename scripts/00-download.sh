@@ -12,6 +12,6 @@ fetch() { local url=$1 out=$2
 }
 
 fetch "$VOID_PLATFORMFS_URL"      "void-platformfs.tar.xz"
-fetch "$CLOCKWORK_KERNEL_DEB_URL" "uconsole-kernel-cm4-rpi.deb"
+fetch "$CLOCKWORK_KERNEL_DEB_URL" "clockworkpi-kernel.deb"
 
 echo "[ok  ] downloads complete"
