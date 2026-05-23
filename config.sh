@@ -50,5 +50,9 @@ PACKAGES_AUDIO="pipewire wireplumber alsa-pipewire alsa-utils pavucontrol pamixe
 PACKAGES_NET="NetworkManager network-manager-applet ModemManager libmbim libqmi mobile-broadband-provider-info usb-modeswitch socat ppp"
 PACKAGES_APPS="firefox-esr Thunar gnome-disk-utility galculator mpv imv gnome-text-editor"
 PACKAGES_UTIL="libgpiod i2c-tools usbutils pciutils lsof htop btop fastfetch rsync"
+# Fonts. foot/Waybar/fuzzel/labwc all use fontconfig, which complains hard
+# (and renders nothing) without at least one monospace + one sans-serif font.
+# noto-fonts-emoji covers the symbols Waybar uses.
+PACKAGES_FONTS="dejavu-fonts-ttf noto-fonts-ttf noto-fonts-ttf-extra noto-fonts-emoji font-awesome6 liberation-fonts-ttf"
 
-ALL_PACKAGES="$PACKAGES_BASE $PACKAGES_FIRMWARE $PACKAGES_GFX $PACKAGES_WAYLAND $PACKAGES_AUDIO $PACKAGES_NET $PACKAGES_APPS $PACKAGES_UTIL"
+ALL_PACKAGES="$PACKAGES_BASE $PACKAGES_FIRMWARE $PACKAGES_GFX $PACKAGES_WAYLAND $PACKAGES_AUDIO $PACKAGES_NET $PACKAGES_APPS $PACKAGES_UTIL $PACKAGES_FONTS"
