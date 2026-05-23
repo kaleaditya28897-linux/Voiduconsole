@@ -42,12 +42,15 @@ for s in $services; do
 done
 
 echo "[..] greetd: run labwc as _greeter; labwc autostart launches regreet"
+# _greeter ships with /sbin/nologin which fails pam_shells -> no PAM session ->
+# no elogind session -> seatd refuses input devices. Give it a real shell.
+CHROOT "usermod -s /bin/bash _greeter"
 sudo tee "$ROOTFS/etc/greetd/config.toml" >/dev/null <<EOF
 [terminal]
 vt = 1
 
 [default_session]
-command = "dbus-run-session -- labwc"
+command = "labwc"
 user = "_greeter"
 EOF
 sudo mkdir -p "$ROOTFS/var/lib/_greeter/.config/labwc"
