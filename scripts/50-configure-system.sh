@@ -60,6 +60,13 @@ sudo tee "$ROOTFS/var/lib/_greeter/.config/labwc/outputs.xml" >/dev/null <<EOF
 <labwc_config><output><name>DSI-1</name><transform>270</transform><scale>1.0</scale></output></labwc_config>
 EOF
 sudo chroot "$ROOTFS" /usr/bin/qemu-aarch64-static /bin/bash -c "chown -R _greeter:_greeter /var/lib/_greeter"
+# _greeter needs seat + input + video access for labwc/regreet to open the seat and HID devices
+for g in _seatd seat video input plugdev; do
+  CHROOT "getent group $g >/dev/null && usermod -aG $g _greeter && echo '  + _greeter -> $g'" || true
+done
+for g in _seatd seat; do
+  CHROOT "getent group $g >/dev/null && usermod -aG $g $USERNAME && echo '  + $USERNAME -> $g'" || true
+done
 
 echo "[..] restore setuid bits stripped by qemu-user xbps-install"
 for bin in /usr/bin/sudo /usr/bin/su /usr/bin/passwd /usr/bin/chage /usr/bin/chsh \
