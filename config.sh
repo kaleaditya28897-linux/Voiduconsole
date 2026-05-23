@@ -13,9 +13,12 @@ BOOT_SIZE_MB=512
 HOSTNAME="uconsole"
 
 # --- default user ---
-USERNAME="aditya"
-USERPASS="adi28897"         # change after first boot
-ROOTPASS="adi28897"
+# Void Linux convention: default user "anon" with password "voidlinux".
+# Same default password is set for root so first boot matches a stock Void
+# install. Change both immediately after first login with `passwd`.
+USERNAME="anon"
+USERPASS="voidlinux"
+ROOTPASS="voidlinux"
 LOCALE="en_IN.UTF-8"
 TIMEZONE="Asia/Kolkata"
 KEYMAP="us"

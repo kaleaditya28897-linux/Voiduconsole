@@ -220,7 +220,7 @@ sudo resize2fs /dev/mmcblk0p2
    `fbcon=rotate:1 video=DSI-1:panel_orientation=right_side_up`).
 3. `greetd` starts a labwc session as the system user `_greeter`, which then
    `exec`s **ReGreet** on the rotated panel.
-4. Log in as **`aditya`** with password **`adi28897`** — your labwc session
+4. Log in as **`anon`** with password **`voidlinux`** — your labwc session
    starts (Waybar at the top, swaybg dark background, mako notifications,
    `nm-applet` tray icon).
 
@@ -258,17 +258,17 @@ A full reference is always reachable in-session via **Super + ?** (runs
 
 | User       | Password   |
 |------------|------------|
-| `root`     | `adi28897` |
-| `aditya`   | `adi28897` |
+| `root`     | `voidlinux` |
+| `anon`   | `voidlinux` |
 
 Change immediately on first login:
 
 ```bash
-passwd                 # change aditya's password
+passwd                 # change anon's password
 sudo passwd root       # change root's password
 ```
 
-`aditya` is in `wheel,audio,video,input,plugdev,network,storage,users,dialout`.
+`anon` is in `wheel,audio,video,input,plugdev,network,storage,users,dialout`.
 `sudo` is wired up for `wheel`.
 
 ---
@@ -452,7 +452,7 @@ After any change, just re-run `./build.sh`. Untouched stages are fast.
 ### No ReGreet appears
 
 ```bash
-# switch to a TTY (Ctrl+Alt+F2), log in as aditya / adi28897
+# switch to a TTY (Ctrl+Alt+F2), log in as anon / voidlinux
 sudo sv status greetd
 sudo head /var/log/socklog/everything/current     # if socklog enabled
 journalctl                                         # NOT applicable on runit
@@ -480,7 +480,7 @@ initramfs (`xbps-reconfigure -f linux`) and reboot.
 ### sudo says "must be owned by uid 0 and must have the setuid bit set"
 
 The build was produced before the setuid fixup landed. Boot, log in on a TTY
-as root (`root / adi28897`), then:
+as root (`root / voidlinux`), then:
 
 ```bash
 chmod 4755 /usr/bin/sudo /usr/bin/su /usr/bin/passwd
@@ -493,7 +493,7 @@ Same root cause as above (built before the openssl-hash fix). From a root
 TTY:
 
 ```bash
-passwd aditya
+passwd anon
 passwd root
 ```
 
