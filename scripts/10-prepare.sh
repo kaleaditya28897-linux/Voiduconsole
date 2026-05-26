@@ -6,8 +6,8 @@ cd "$(dirname "$0")/.."
 log() { printf '\033[1;36m[10-prepare]\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31m[fail]\033[0m %s\n' "$*" >&2; exit 1; }
 
-XFCE_IMG_XZ="downloads/$(basename "$VOID_XFCE_IMG_URL")"
-WORK_IMG="work/$(basename "${XFCE_IMG_XZ%.xz}")"
+RPI_IMG_XZ="downloads/$(basename "$VOID_RPI_IMG_URL")"
+WORK_IMG="work/$(basename "${RPI_IMG_XZ%.xz}")"
 
 mkdir -p work
 
@@ -29,7 +29,7 @@ fi
 # Decompress (idempotent — skip if already done)
 if [ ! -f "$WORK_IMG" ]; then
     log "Decompressing image (this may take a few minutes)..."
-    xz -dk "$XFCE_IMG_XZ" --stdout > "$WORK_IMG"
+    xz -dk "$RPI_IMG_XZ" --stdout > "$WORK_IMG"
 else
     log "Using existing decompressed image: $WORK_IMG"
 fi

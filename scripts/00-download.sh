@@ -8,20 +8,17 @@ die() { printf '\033[1;31m[fail]\033[0m %s\n' "$*" >&2; exit 1; }
 
 mkdir -p downloads
 
-XFCE_IMG_XZ="downloads/$(basename "$VOID_XFCE_IMG_URL")"
+RPI_IMG_XZ="downloads/$(basename "$VOID_RPI_IMG_URL")"
 KERNEL_DEB="downloads/$(basename "$CLOCKWORK_KERNEL_DEB_URL")"
 
-if [ ! -f "$XFCE_IMG_XZ" ]; then
-    log "Checking XFCE image URL..."
-    wget -q --spider "$VOID_XFCE_IMG_URL" 2>/dev/null || \
-        die "XFCE image not found at $VOID_XFCE_IMG_URL
-  → Update VOID_XFCE_IMG_URL in config.sh.
-  → If Void only ships a base RPi image, use that URL and add an xfce4 install
-    step in scripts/20-swap-kernel.sh (see comment in config.sh)."
-    log "Downloading Void XFCE RPi image (~1 GiB)..."
-    wget -O "${XFCE_IMG_XZ}.part" "$VOID_XFCE_IMG_URL" && mv "${XFCE_IMG_XZ}.part" "$XFCE_IMG_XZ"
+if [ ! -f "$RPI_IMG_XZ" ]; then
+    log "Checking RPi base image URL..."
+    wget -q --spider "$VOID_RPI_IMG_URL" 2>/dev/null || \
+        die "RPi image not found at $VOID_RPI_IMG_URL — update VOID_RPI_IMG_URL in config.sh"
+    log "Downloading Void Linux RPi base image (~500 MiB)..."
+    wget -O "${RPI_IMG_XZ}.part" "$VOID_RPI_IMG_URL" && mv "${RPI_IMG_XZ}.part" "$RPI_IMG_XZ"
 else
-    log "Cached: $XFCE_IMG_XZ"
+    log "Cached: $RPI_IMG_XZ"
 fi
 
 if [ ! -f "$KERNEL_DEB" ]; then

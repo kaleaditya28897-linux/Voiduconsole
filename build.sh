@@ -1,5 +1,5 @@
 #!/bin/bash
-# Voiduconsole: patch the official Void XFCE RPi image for ClockworkPi uConsole CM4.
+# Voiduconsole: patch the official Void Linux RPi base image for ClockworkPi uConsole CM4.
 # Run as a normal user; will sudo for chroot/loopdev/mount.
 set -euo pipefail
 
@@ -28,6 +28,7 @@ trap cleanup EXIT
 
 bash "$PROJ/scripts/00-download.sh"
 bash "$PROJ/scripts/10-prepare.sh"
+bash "$PROJ/scripts/15-install-xfce.sh"
 bash "$PROJ/scripts/20-swap-kernel.sh"
 bash "$PROJ/scripts/30-configure.sh"
 bash "$PROJ/scripts/40-finalise.sh"
