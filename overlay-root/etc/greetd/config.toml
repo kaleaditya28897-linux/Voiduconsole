@@ -1,7 +1,0 @@
-# greetd: launch ReGreet (GTK greeter) -> labwc session for the default user.
-[terminal]
-vt = 1
-
-[default_session]
-command = "labwc-greeter"
-user = "greeter"
