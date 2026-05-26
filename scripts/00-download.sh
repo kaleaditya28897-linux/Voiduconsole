@@ -3,15 +3,32 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 . ./config.sh
 
-cd downloads
-fetch() { local url=$1 out=$2
-  if [ -s "$out" ]; then echo "[have] $out"; return; fi
-  echo "[get ] $url"
-  wget -q --show-progress -O "$out.part" "$url"
-  mv "$out.part" "$out"
-}
+log() { printf '\033[1;36m[00-download]\033[0m %s\n' "$*"; }
+die() { printf '\033[1;31m[fail]\033[0m %s\n' "$*" >&2; exit 1; }
 
-fetch "$VOID_PLATFORMFS_URL"      "void-platformfs.tar.xz"
-fetch "$CLOCKWORK_KERNEL_DEB_URL" "clockworkpi-kernel.deb"
+mkdir -p downloads
 
-echo "[ok  ] downloads complete"
+XFCE_IMG_XZ="downloads/$(basename "$VOID_XFCE_IMG_URL")"
+KERNEL_DEB="downloads/$(basename "$CLOCKWORK_KERNEL_DEB_URL")"
+
+if [ ! -f "$XFCE_IMG_XZ" ]; then
+    log "Checking XFCE image URL..."
+    wget -q --spider "$VOID_XFCE_IMG_URL" 2>/dev/null || \
+        die "XFCE image not found at $VOID_XFCE_IMG_URL
+  → Update VOID_XFCE_IMG_URL in config.sh.
+  → If Void only ships a base RPi image, use that URL and add an xfce4 install
+    step in scripts/20-swap-kernel.sh (see comment in config.sh)."
+    log "Downloading Void XFCE RPi image (~1 GiB)..."
+    wget -O "$XFCE_IMG_XZ" "$VOID_XFCE_IMG_URL"
+else
+    log "Cached: $XFCE_IMG_XZ"
+fi
+
+if [ ! -f "$KERNEL_DEB" ]; then
+    log "Downloading clockworkpi kernel deb..."
+    wget -O "$KERNEL_DEB" "$CLOCKWORK_KERNEL_DEB_URL"
+else
+    log "Cached: $KERNEL_DEB"
+fi
+
+log "[ok] downloads complete"
