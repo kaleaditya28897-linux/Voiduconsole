@@ -14,7 +14,7 @@ sudo umount work/boot   || true
 sudo umount work/rootfs || true
 
 log "Detaching loop device $LOOP..."
-sudo losetup -d "$LOOP"
+sudo losetup -d "$LOOP" 2>/dev/null || log "Warning: could not detach $LOOP (already gone?)"
 rm -f work/loop.dev
 
 WORK_IMG=$(ls work/*.img 2>/dev/null | head -1)

@@ -20,6 +20,7 @@ sudo cp overlay-boot/config.txt work/boot/config.txt
 log "Patching cmdline.txt with PARTUUID..."
 ROOT_PARTUUID=$(sudo blkid -s PARTUUID -o value "${LOOP}p2")
 [ -n "$ROOT_PARTUUID" ] || die "Could not read PARTUUID from ${LOOP}p2"
+grep -q 'ROOTDEV' overlay-boot/cmdline.txt || die "overlay-boot/cmdline.txt has no ROOTDEV token — cannot patch PARTUUID"
 sudo sed "s|ROOTDEV|PARTUUID=$ROOT_PARTUUID|g" overlay-boot/cmdline.txt | \
     sudo tee work/boot/cmdline.txt >/dev/null
 log "  PARTUUID: $ROOT_PARTUUID"
