@@ -6,6 +6,7 @@ set -euo pipefail
 PROJ="$(cd "$(dirname "$0")" && pwd)"
 cd "$PROJ"
 . ./config.sh
+export IMG_NAME
 
 log() { printf '\033[1;36m[build]\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31m[fail]\033[0m %s\n' "$*" >&2; exit 1; }
@@ -16,6 +17,14 @@ for t in xz wget parted losetup resize2fs e2fsck rsync ar blkid; do require "$t"
 [ -f /proc/sys/fs/binfmt_misc/qemu-aarch64 ] || die "aarch64 binfmt not registered (see README)"
 
 sudo -n true 2>/dev/null || sudo -v
+
+cleanup() {
+    sudo umount work/boot work/rootfs 2>/dev/null || true
+    if [ -f work/loop.dev ]; then
+        sudo losetup -d "$(cat work/loop.dev)" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT
 
 bash "$PROJ/scripts/00-download.sh"
 bash "$PROJ/scripts/10-prepare.sh"

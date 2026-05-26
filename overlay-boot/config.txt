@@ -30,5 +30,5 @@ kernel=kernel8.img
 dtoverlay=clockworkpi-uconsole
 dtoverlay=vc4-kms-v3d-pi4,cma-384
 enable_uart=1
-over_voltage=2
+over_voltage=2    # headroom for modem + USB host on the back board
 arm_boost=1

@@ -19,14 +19,14 @@ if [ ! -f "$XFCE_IMG_XZ" ]; then
   → If Void only ships a base RPi image, use that URL and add an xfce4 install
     step in scripts/20-swap-kernel.sh (see comment in config.sh)."
     log "Downloading Void XFCE RPi image (~1 GiB)..."
-    wget -O "$XFCE_IMG_XZ" "$VOID_XFCE_IMG_URL"
+    wget -O "${XFCE_IMG_XZ}.part" "$VOID_XFCE_IMG_URL" && mv "${XFCE_IMG_XZ}.part" "$XFCE_IMG_XZ"
 else
     log "Cached: $XFCE_IMG_XZ"
 fi
 
 if [ ! -f "$KERNEL_DEB" ]; then
     log "Downloading clockworkpi kernel deb..."
-    wget -O "$KERNEL_DEB" "$CLOCKWORK_KERNEL_DEB_URL"
+    wget -O "${KERNEL_DEB}.part" "$CLOCKWORK_KERNEL_DEB_URL" && mv "${KERNEL_DEB}.part" "$KERNEL_DEB"
 else
     log "Cached: $KERNEL_DEB"
 fi

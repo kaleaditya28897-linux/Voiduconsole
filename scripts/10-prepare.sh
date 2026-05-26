@@ -14,10 +14,15 @@ mkdir -p work
 # Bail early if already mounted from a previous run
 if [ -f work/loop.dev ]; then
     EXISTING=$(cat work/loop.dev)
-    if sudo losetup "$EXISTING" >/dev/null 2>&1; then
-        log "Image already loop-mounted at $EXISTING — skipping prepare stage"
+    if sudo losetup "$EXISTING" >/dev/null 2>&1 \
+       && mountpoint -q work/boot \
+       && mountpoint -q work/rootfs; then
+        log "Image already prepared and mounted at $EXISTING — skipping"
         exit 0
     fi
+    # Loop device exists but mounts are gone — detach and redo
+    sudo umount work/boot work/rootfs 2>/dev/null || true
+    sudo losetup -d "$EXISTING" 2>/dev/null || true
     rm -f work/loop.dev
 fi
 

@@ -9,6 +9,8 @@ die() { printf '\033[1;31m[fail]\033[0m %s\n' "$*" >&2; exit 1; }
 KERNEL_DEB="downloads/$(basename "$CLOCKWORK_KERNEL_DEB_URL")"
 
 [ -f work/loop.dev ] || die "work/loop.dev missing — run 10-prepare.sh first"
+mountpoint -q work/boot   || die "work/boot is not mounted — re-run 10-prepare.sh"
+mountpoint -q work/rootfs || die "work/rootfs is not mounted — re-run 10-prepare.sh"
 
 log "Extracting kernel deb..."
 rm -rf work/kerneldeb
@@ -17,17 +19,17 @@ mkdir -p work/kerneldeb/data
 tar -xf work/kerneldeb/data.tar.xz -C work/kerneldeb/data
 
 log "Installing kernel into boot partition..."
-sudo cp work/kerneldeb/data/boot/kernel8.img work/boot/kernel8.img
+sudo cp work/kerneldeb/data/boot/firmware/kernel8.img work/boot/kernel8.img
 
 # DTBs
-sudo cp work/kerneldeb/data/boot/*.dtb work/boot/ 2>/dev/null || \
-    log "Warning: no *.dtb found at top level of deb boot/ — skipping"
+sudo cp work/kerneldeb/data/boot/firmware/*.dtb work/boot/ 2>/dev/null || \
+    log "Warning: no *.dtb found in deb boot/firmware/ — skipping"
 
 # Overlays
 sudo mkdir -p work/boot/overlays
-sudo find work/kerneldeb/data/boot/overlays -name '*.dtbo' \
+sudo find work/kerneldeb/data/boot/firmware/overlays -name '*.dtbo' \
     -exec sudo cp {} work/boot/overlays/ \;
-sudo cp work/kerneldeb/data/boot/overlays/README work/boot/overlays/ 2>/dev/null || true
+sudo cp work/kerneldeb/data/boot/firmware/overlays/README work/boot/overlays/ 2>/dev/null || true
 
 log "Installing kernel modules (CM4 / 4 KiB page tree)..."
 # The ak-rex deb ships both CM4 (*-v8+) and CM5 (*-v8-16k+) module trees.
@@ -40,7 +42,7 @@ sudo cp -a "$CM4_MOD_SRC" "work/rootfs/lib/modules/$KVER"
 
 log "Running depmod inside chroot..."
 sudo chroot work/rootfs /usr/bin/qemu-aarch64-static /bin/bash -c \
-    "depmod -a $KVER"
+    'depmod -a '"$KVER"
 
 log "[ok] kernel swapped: $KVER"
 log "    kernel8.img  -> work/boot/kernel8.img"
