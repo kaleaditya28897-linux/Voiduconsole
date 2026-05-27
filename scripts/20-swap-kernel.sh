@@ -13,7 +13,7 @@ mountpoint -q work/boot   || die "work/boot is not mounted — re-run 10-prepare
 mountpoint -q work/rootfs || die "work/rootfs is not mounted — re-run 10-prepare.sh"
 
 log "Extracting kernel deb..."
-rm -rf work/kerneldeb
+sudo rm -rf work/kerneldeb
 mkdir -p work/kerneldeb/data
 (cd work/kerneldeb && ar x "../../$KERNEL_DEB")
 tar -xf work/kerneldeb/data.tar.xz -C work/kerneldeb/data
