@@ -14,9 +14,11 @@ IMG_NAME="voiduconsole-cm4-$(date +%Y%m%d).img"
 IMG_SIZE_MB=6144          # 6 GiB; fits an 8 GB SD card
 
 # --- XFCE package set installed in stage 15 ---
-# Keep this minimal — xfce4 pulls in the full desktop; lightdm is the greeter;
-# the rest is hardware support needed on the uConsole.
-XFCE_PACKAGES="xfce4 lightdm lightdm-gtk3-greeter \
+# xorg-server + drivers must be explicit — xfce4 meta-package does not pull
+# them in reliably inside a chroot.  xf86-video-modesetting is the correct
+# driver for vc4 KMS on CM4 (not fbdev).
+XFCE_PACKAGES="xorg-server xf86-video-modesetting xf86-input-libinput \
+    xfce4 lightdm lightdm-gtk3-greeter \
     NetworkManager network-manager-applet ModemManager libmbim libqmi \
     mobile-broadband-provider-info usb-modeswitch \
     pipewire wireplumber alsa-pipewire alsa-utils \

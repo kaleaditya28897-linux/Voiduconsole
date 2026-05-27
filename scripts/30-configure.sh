@@ -57,7 +57,7 @@ CHROOT "chown -R $USERNAME:$USERNAME /home/$USERNAME"
 
 # --- Runit services ---
 log "Enabling runit services..."
-for s in dbus elogind polkitd NetworkManager ModemManager lightdm; do
+for s in dbus elogind polkitd NetworkManager ModemManager modemmanager lightdm; do
     if [ -d "work/rootfs/etc/sv/$s" ]; then
         sudo ln -sf "/etc/sv/$s" "work/rootfs/etc/runit/runsvdir/default/$s"
         log "  enabled: $s"
