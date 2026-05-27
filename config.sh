@@ -18,6 +18,7 @@ IMG_SIZE_MB=6144          # 6 GiB; fits an 8 GB SD card
 # them in reliably inside a chroot.  xf86-video-modesetting is the correct
 # driver for vc4 KMS on CM4 (not fbdev).
 XFCE_PACKAGES="xorg-server xf86-video-modesetting xf86-input-libinput \
+    mesa-dri xorg-fonts font-misc-misc font-cursor-misc dejavu-fonts-ttf \
     xfce4 lightdm lightdm-gtk3-greeter \
     NetworkManager network-manager-applet ModemManager libmbim libqmi \
     mobile-broadband-provider-info usb-modeswitch \
