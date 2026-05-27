@@ -41,8 +41,10 @@ log "Kernel version: $KVER"
 sudo cp -a "$CM4_MOD_SRC" "work/rootfs/lib/modules/$KVER"
 
 log "Running depmod inside chroot..."
+sudo cp /usr/bin/qemu-aarch64-static work/rootfs/usr/bin/qemu-aarch64-static
 sudo chroot work/rootfs /usr/bin/qemu-aarch64-static /bin/bash -c \
     'depmod -a '"$KVER"
+sudo rm -f work/rootfs/usr/bin/qemu-aarch64-static
 
 log "[ok] kernel swapped: $KVER"
 log "    kernel8.img  -> work/boot/kernel8.img"

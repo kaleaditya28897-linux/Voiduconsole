@@ -13,6 +13,10 @@ mountpoint -q work/rootfs || die "work/rootfs is not mounted — re-run 10-prepa
 
 CHROOT() { sudo chroot work/rootfs /usr/bin/qemu-aarch64-static /bin/bash -c "$*"; }
 
+# Stage 15 removes qemu after installing packages; restore it for our chroot calls.
+sudo cp /usr/bin/qemu-aarch64-static work/rootfs/usr/bin/qemu-aarch64-static
+trap 'sudo rm -f work/rootfs/usr/bin/qemu-aarch64-static' EXIT
+
 # --- Boot partition ---
 log "Writing config.txt..."
 sudo cp overlay-boot/config.txt work/boot/config.txt
