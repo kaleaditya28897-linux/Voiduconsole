@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=uConsole Call
-Comment=Place phone calls via the SIM7600G modem (AT)
-Exec=foot -T "uConsole Call" uconsole-call
-Icon=call-start
-Terminal=false
-Type=Application
-Categories=Network;Telephony;

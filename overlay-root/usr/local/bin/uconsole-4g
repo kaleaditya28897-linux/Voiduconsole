@@ -10,7 +10,7 @@ CHIP=gpiochip0
 PWR_EN=24
 PWRKEY=15
 
-usage() { echo "usage: $0 {enable|disable|status}"; exit 1; }
+usage() { echo "usage: $0 {on|off|status}"; exit 1; }
 
 ensure_gpioset() { command -v gpioset >/dev/null || { echo "install libgpiod"; exit 2; }; }
 
@@ -40,8 +40,8 @@ status_4g() {
 [ "${1:-}" ] || usage
 ensure_gpioset
 case "$1" in
-  enable)  enable_4g ;;
-  disable) disable_4g ;;
-  status)  status_4g ;;
+  on)     enable_4g ;;
+  off)    disable_4g ;;
+  status) status_4g ;;
   *) usage ;;
 esac

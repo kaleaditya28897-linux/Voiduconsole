@@ -1,0 +1,2 @@
+# ClockworkPi uConsole keyboard controller (LeafLabs Maple 003)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1eaf", ATTR{idProduct}=="0003", RUN+="/sbin/modprobe usbhid", RUN+="/bin/sh -c 'echo 1eaf 0003 > /sys/bus/usb/drivers/usbhid/new_id'"
